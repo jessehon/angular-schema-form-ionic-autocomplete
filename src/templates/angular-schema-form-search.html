@@ -1,0 +1,52 @@
+<div class="form-group {{form.htmlClass}} schema-form-select"
+     ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false}">
+  <asf-search>
+    <asf-search-input>
+      <md-autocomplete
+        ng-disabled="form.readonly"
+        ng-model="$$value$$"
+        sf-autocomplete
+        sf-field-model="replaceAll"
+        schema-validate="form"
+        md-selected-item="$$value$$"
+        md-search-text="searchText"
+        md-search-text-change="closeFilter()"
+        md-selected-item-change="'todo';"
+        md-items="item in evalExpr('this[\''+form.optionFilter+'\'](\''+searchText+'\')')"
+        md-item-text="item.name"
+        placeholder="{{form.title || form.key.slice(-1)[0]}}"
+        md-menu-class="autocomplete-custom-template">
+        <md-item-template>
+          <span md-highlight-text="searchText">{{item.title}}</span>
+        </md-item-template>
+        <md-not-found>
+          No matches found
+        </md-not-found>
+      </md-autocomplete>
+      <md-button type="button" id="more" class="md-icon-button" aria-label="More" ng-click="toggleFilterOpen()">
+        <md-icon md-svg-icon="ic_arrow_drop_down_black_48px.svg" aria-hidden="true"></md-icon>
+      </md-button>
+    </asf-search-input>
+    <md-button class="asf-search-button md-raised md-primary">
+      <md-icon md-svg-icon="ic_search_white_48px.svg" aria-hidden="true"></md-icon>
+    </md-button>
+    <md-item-template>
+      <span md-highlight-text="searchText">{{item.title}}</span>
+    </md-item-template>
+    <asf-search-filter ng-show="filterOpen">
+      <md-whiteframe
+          md-auto-shrink md-auto-shrink-min="1"
+          class="md-autocomplete-suggestions-container md-whiteframe-z1 md-orient-vertical"
+          aria-hidden="false"
+          layout-gt-lg="column">
+      </md-whiteframe>
+    </asf-search-filter>
+  </asf-search>
+  <div ng-messages="ngModel.$error">
+    <!--
+       This is a bit of a hack. sf-message does the work, but ng-messages and ng-message
+       is needed for the styling
+    -->
+    <div sf-message ng-message></div>
+  </div>
+</div>
