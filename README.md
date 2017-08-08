@@ -1,1 +1,1 @@
-angular-schema-form-search
+angular-schema-form-ionic-autocomplete
