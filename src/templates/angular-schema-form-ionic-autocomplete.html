@@ -1,0 +1,15 @@
+<asf-ionic-autocomplete>
+  <input
+    sf-field-model
+    name="{{form.key.slice(-1)[0]}}"
+    type="text"
+    readonly="form.readonly"
+    class="ion-autocomplete {{form.fieldHtmlClass}}"
+    autocomplete="off"
+    ion-autocomplete
+    item-value-key="{{ form.itemValueKey }}"
+    item-view-value-key="{{ form.itemViewValueKey }}"
+    max-selected-items="form.maxSelectedItems"
+    items-method="getItems(query)"
+  />
+</asf-ionic-autocomplete>
