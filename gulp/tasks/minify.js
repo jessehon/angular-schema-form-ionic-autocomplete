@@ -14,10 +14,10 @@ gulp.task('minify', function() {
     })),
     gulp.src(['src/*.js'])
   )
-  .pipe(concat('angular-schema-form-search.js'))
+  .pipe(concat('angular-schema-form-ionic-autocomplete.js'))
   .pipe(gulp.dest('./dist'))
   .pipe(uglify())
-  .pipe(rename('angular-schema-form-search.min.js'))
+  .pipe(rename('angular-schema-form-ionic-autocomplete.min.js'))
   .pipe(gulp.dest('./dist'));
 
   return stream;

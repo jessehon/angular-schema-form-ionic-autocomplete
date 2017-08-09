@@ -1,65 +1,79 @@
 <html>
   <head>
-    <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/angular-animate/angular-animate.min.js"></script>
-    <script src="../bower_components/angular-aria/angular-aria.min.js"></script>
-    <script src="../bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="../bower_components/lodash/dist/lodash.js"></script>
+    <script src="../bower_components/ionic/release/js/ionic.bundle.js"></script>
     <script src="../bower_components/tv4/tv4.js"></script>
     <script src="../bower_components/objectpath/lib/ObjectPath.js"></script>
-    <script src="../bower_components/angular-material/angular-material.min.js"></script>
     <script src="../bower_components/angular-schema-form/dist/schema-form.js"></script>
-    <script src="../bower_components/angular-schema-form-material/material-decorator.js"></script>
-    <script src="../dist/angular-schema-form-search.js"></script>
+    <script src="../bower_components/angular-schema-form-ionic/dist/ionic-decorator.js"></script>
+    <script src="../bower_components/ion-autocomplete/dist/ion-autocomplete.js"></script>
+    <script src="../dist/angular-schema-form-ionic-autocomplete.js"></script>
 
-    <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css">
-    <link rel="stylesheet" href="../bower_components/angular-material/angular-material.layouts.min.css">
-    <link rel="stylesheet" href="main.css">
+    <link href="../bower_components/ionic/release/css/ionic.css" rel="stylesheet">
+    <link href="../bower_components/ion-autocomplete/dist/ion-autocomplete.css" rel="stylesheet">
 
     <script>
       angular
-        .module('test', [ 'schemaForm', 'ngMaterial', 'angularSchemaFormSearch' ])
-        .config(function($mdThemingProvider, $mdDateLocaleProvider) {
-          $mdThemingProvider.setDefaultTheme('default')
-          $mdThemingProvider.alwaysWatchTheme(true);
-        })
+        .module('test', [ 'schemaForm', 'angularSchemaFormIonicAutocomplete' ])
+
         .controller('FormController', function($scope, $http, $location, $timeout, $q) {
 
           $scope.schema = {
             "type": "object",
             "properties": {
-              "searchFilter": {
-                "type": "object",
-                "properties": {
-                  "string": {
-                    "type": "string",
-                    "description": "Name or alias",
-                    "minLength": 2
-                  },
-                  "title": {
-                    "title": "Name",
-                    "type": "string"
-                  },
-                  "year": {
-                    "title": "Year",
-                    "type": "number",
-                    "format": "YYYY"
-                  }
-                }
+              "platforms": {
+                "title": "Platform",
+                "type": "string"
               }
             }
           };
 
           $scope.form = [
             {
-              "title": "Find a movie",
-              "key": "searchFilter.string",
-              "type": "search",
-              "items": [
-                "searchFilter.title",
-                "searchFilter.year",
-                "searchFilter.star",
-                "searchFilter.arg",
-                "searchFilter.eek"
+              "key": "platforms",
+              "type": "autocomplete",
+              "maxSelectedItems": 1,
+              "itemValueKey": "value",
+              "itemViewValueKey": "name",
+              "filterPropertiesMap": [
+                {
+                  "value": "windows-10",
+                  "version": "10",
+                  "os": "windows"
+                },
+                {
+                  "value": "windows-8.1",
+                  "version": "8.1",
+                  "os": "windows"
+                },
+                {
+                  "value": "osx-10.13",
+                  "version": "10.13",
+                  "os": "osx"
+                },
+                {
+                  "value": "osx-10.12",
+                  "version": "10.12",
+                  "os": "osx"
+                }
+              ],
+              "titleMap": [
+                {
+                  "value": "windows-10",
+                  "name": "Windows 10"
+                },
+                {
+                  "value": "windows-8.1",
+                  "name": "Windows 8.1"
+                },
+                {
+                  "value": "osx-10.13",
+                  "name": "Mac OS X 10.13 High Sierra"
+                },
+                {
+                  "value": "osx-10.12",
+                  "name": "Mac OS X 10.12 High Sierra"
+                }
               ]
             }
           ];
@@ -67,92 +81,6 @@
           $scope.model = {};
 
           $scope.debug = {schema: $scope.schema, form: $scope.form};
-
-          // Search functions
-          $scope.arnieFlix = loadFlix();
-          $scope.searchText    = null;
-          $scope.simulateQuery = false;
-          $scope.querySearch   = querySearch;
-          /**
-           * Search for arnieFlix... use $timeout to simulate
-           * remote dataservice call.
-           */
-          function querySearch (query) {
-            var results = query ? $scope.arnieFlix.filter( createFilterFor(query) ) : $scope.arnieFlix,
-                deferred;
-            if ($scope.simulateQuery) {
-              deferred = $q.defer();
-              $timeout(function () { deferred.resolve( results ); }, Math.random() * 1000, false);
-              return deferred.promise;
-            } else {
-              return results;
-            }
-          };
-
-          /**
-           * Create filter function for a query string
-           */
-          function createFilterFor(query) {
-            var lowercaseQuery = angular.lowercase(query);
-            return function filterFn(item) {
-              return (item.value.indexOf(lowercaseQuery) === 0);
-            };
-          };
-
-          function loadFlix() {
-            var films = [
-              { "year": undefined, "title": "The Legend of Conan" },
-              { "year": undefined, "title": "Triplets" },
-              { "year": 2015, "title": "Terminator Genisys" },
-              { "year": 2015, "title": "Maggie" },
-              { "year": 2014, "title": "The Expendables 3" },
-              { "year": 2014, "title": "Sabotage" },
-              { "year": 2013, "title": "Escape Plan" },
-              { "year": 2013, "title": "The Last Stand" },
-              { "year": 2012, "title": "The Expendables 2" },
-              { "year": 2010, "title": "The Expendables" },
-              { "year": 2005, "title": "The Kid & I" },
-              { "year": 2004, "title": "Around the World in 80 Days" },
-              { "year": 2003, "title": "Welcome to the Jungle" },
-              { "year": 2003, "title": "Terminator 3: Rise of the Machines" },
-              { "year": 2002, "title": "Collateral Damage" },
-              { "year": 2000, "title": "The 6th Day" },
-              { "year": 1999, "title": "End of Days" },
-              { "year": 1997, "title": "Batman & Robin" },
-              { "year": 1996, "title": "Jingle All the Way" },
-              { "year": 1996, "title": "Eraser" },
-              { "year": 1994, "title": "Junior" },
-              { "year": 1994, "title": "True Lies" },
-              { "year": 1993, "title": "Last Action Hero" },
-              { "year": 1993, "title": "Dave" },
-              { "year": 1991, "title": "Terminator 2: Judgment Day" },
-              { "year": 1990, "title": "Kindergarten Cop" },
-              { "year": 1990, "title": "Total Recall" },
-              { "year": 1988, "title": "Twins" },
-              { "year": 1988, "title": "Red Heat" },
-              { "year": 1987, "title": "The Running Man" },
-              { "year": 1987, "title": "Predator" },
-              { "year": 1986, "title": "Raw Deal" },
-              { "year": 1985, "title": "Commando" },
-              { "year": 1985, "title": "Red Sonja" },
-              { "year": 1984, "title": "The Terminator" },
-              { "year": 1984, "title": "Conan the Destroyer" },
-              { "year": 1982, "title": "Conan the Barbarian" },
-              { "year": 1980, "title": "The Jayne Mansfield Story" },
-              { "year": 1979, "title": "Scavenger Hunt" },
-              { "year": 1979, "title": "The Villain" },
-              { "year": 1976, "title": "Stay Hungry" },
-              { "year": 1974, "title": "Happy Anniversary and Goodbye" },
-              { "year": 1973, "title": "The Long Goodbye" },
-              { "year": 1969, "title": "Hercules in New York" },
-              { "year": 1969, "title": "Hercules" }
-            ];
-            return films.map( function (film) {
-              film.name = film.title;
-              film.value = film.title.toLowerCase();
-              return film;
-            });
-          };
         });
 
     </script>
@@ -160,37 +88,23 @@
   </head>
 
   <body ng-app="test">
-    <div class="container-fluid" ng-controller="FormController">
-      <md-content class="md-padding" layout="row">
-        <div flex>
-          <h1>Angular Schema Form Material</h1>
-          <h2>Search Add-On Demo</h2>
-          <form sf-schema="schema" sf-form="form" sf-model="model"></form>
-        </div>
+    <div ng-controller="FormController">
+      <div>
+        <h1>Angular Schema Form Ionic</h1>
+        <h2>Autocomplete Demo</h2>
+        <form sf-schema="schema" sf-form="form" sf-model="model"></form>
+      </div>
 
-        <div flex>
-          <div class="wrapper">
-            <md-card>
-              <md-card-content>
-                <h4>Model</h4>
-                <pre>{{model | json}}</pre>
-              </md-card-content>
-            </md-card>
-            <md-card>
-              <md-card-content>
-                <h4>Form</h4>
-                <pre>{{debug.form | json}}</pre>
-              </md-card-content>
-            </md-card>
-            <md-card>
-              <md-card-content>
-                <h4>Schema</h4>
-                <pre>{{debug.schema | json}}</pre>
-              </md-card-content>
-            </md-card>
-          </div>
-        </div>
-      </md-content>
+      <div class="wrapper">
+        <h4>Model</h4>
+        <pre>{{model | json}}</pre>
+
+        <h4>Form</h4>
+        <pre>{{debug.form | json}}</pre>
+
+        <h4>Schema</h4>
+        <pre>{{debug.schema | json}}</pre>
+      </div>
     </div>
   </body>
 </html>
